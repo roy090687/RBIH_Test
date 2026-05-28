@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "testng.dtd">
+<suite name="CalculatorTestSuite" verbose="1">
+
+    <!-- Run all tests sequentially -->
+    <test name="Calculator Functional Tests">
+        <classes>
+            <class name="tests.ArithmeticTests"/>
+            <class name="tests.ScientificTests"/>
+            <class name="tests.BoundaryValidationTests"/>
+        </classes>
+    </test>
+
+</suite>
