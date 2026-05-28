@@ -22,18 +22,21 @@ public class DriverManager {
 
             ChromeOptions options = new ChromeOptions();
 
-            // Required for GitHub Actions / CI pipelines
-            options.addArguments("--headless=new");
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
+            // Read headless value from Maven/system property
+            String headless = System.getProperty("headless", "false");
 
-            // Optional but recommended
-            options.addArguments("--window-size=1920,1080");
-            options.addArguments("--disable-gpu");
+            if (headless.equalsIgnoreCase("true")) {
+                options.addArguments("--headless=new");
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--disable-gpu");
+                options.addArguments("--window-size=1920,1080");
+            }
 
             driver = new ChromeDriver(options);
 
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            driver.manage().window().maximize();
         }
 
         return driver;

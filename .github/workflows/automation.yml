@@ -1,46 +1,63 @@
-name: CI Pipeline
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  name: CI Pipeline
 
-jobs:
-  build-test:
-    runs-on: ubuntu-latest
+  on:
+    push:
+      branches: [ "main" ]
 
-    steps:
-      # Step 1: Checkout repo
-      - name: Checkout code
-        uses: actions/checkout@v4
+    pull_request:
+      branches: [ "main" ]
 
-      # Step 2: Set up Java
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4
-        with:
-          java-version: '11'
-          distribution: 'temurin'
+  jobs:
+    build-test:
+      runs-on: ubuntu-latest
 
-      # Step 3: Cache Maven dependencies
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      steps:
 
-      # Step 4: Install Chrome for Selenium
-      - name: Install Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+        # Step 1: Checkout repository
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-      # Step 5: Build with Maven
-      - name: Build project
-        run: mvn -B clean install
+        # Step 2: Set up Java
+        - name: Set up JDK 11
+          uses: actions/setup-java@v4
+          with:
+            java-version: '11'
+            distribution: 'temurin'
 
-      # Step 6: Run TestNG tests (headless)
-      - name: Run tests
-        run: mvn test -Dtestng.dtd.http=true
+        # Step 3: Cache Maven dependencies
+        - name: Cache Maven packages
+          uses: actions/cache@v4
+          with:
+            path: ~/.m2
+            key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+            restore-keys: |
+              ${{ runner.os }}-maven-
+
+        # Step 4: Install Chrome for Selenium
+        - name: Install Chrome
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable
+
+        # Step 5: Build project
+        - name: Build project
+          run: mvn -B clean install -DskipTests
+
+        # Step 6: Run TestNG tests in Headless Mode
+        - name: Run tests
+          run: mvn test -Dheadless=true -Dtestng.dtd.http=true
+
+        # Step 7: Upload Extent Report
+        - name: Upload Extent Report
+          uses: actions/upload-artifact@v4
+          with:
+            name: extent-report
+            path: target/extent-report.html
+
+        # Step 8: Upload Surefire Reports
+        - name: Upload Surefire Reports
+          uses: actions/upload-artifact@v4
+          with:
+            name: surefire-reports
+            path: target/surefire-reports/
