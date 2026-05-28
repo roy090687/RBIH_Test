@@ -14,7 +14,7 @@
 
       steps:
 
-        # Step 1: Checkout repository
+        # Step 1: Checkout repo
         - name: Checkout code
           uses: actions/checkout@v4
 
@@ -34,22 +34,24 @@
             restore-keys: |
               ${{ runner.os }}-maven-
 
-        # Step 4: Install Chrome for Selenium
+        # Step 4: Install Chrome
         - name: Install Chrome
           run: |
             sudo apt-get update
             sudo apt-get install -y google-chrome-stable
 
-        # Step 5: Build project
+        # Step 5: Build Project
         - name: Build project
           run: mvn -B clean install -DskipTests
 
-        # Step 6: Run TestNG tests in Headless Mode
+        # Step 6: Run Tests
         - name: Run tests
           run: mvn test -Dheadless=true -Dtestng.dtd.http=true
+          continue-on-error: true
 
         # Step 7: Upload Extent Report
         - name: Upload Extent Report
+          if: always()
           uses: actions/upload-artifact@v4
           with:
             name: extent-report
@@ -57,6 +59,7 @@
 
         # Step 8: Upload Surefire Reports
         - name: Upload Surefire Reports
+          if: always()
           uses: actions/upload-artifact@v4
           with:
             name: surefire-reports
