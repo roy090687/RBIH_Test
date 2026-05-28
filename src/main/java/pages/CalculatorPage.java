@@ -21,11 +21,11 @@ public class CalculatorPage {
     }
 
     public void clickSubtract() {
-        driver.findElement(By.xpath("//button[normalize-space()='−']")).click();
+        driver.findElement(By.cssSelector("button:nth-child(12)")).click();
     }
 
     public void clickMultiply() {
-        driver.findElement(By.xpath("//button[normalize-space()='×']")).click();
+        driver.findElement(By.cssSelector("button[onclick=\"append('*')\"]")).click();
     }
 
     public void clickDivide() {
