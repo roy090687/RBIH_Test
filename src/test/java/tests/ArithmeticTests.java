@@ -67,4 +67,62 @@ public class ArithmeticTests extends BaseTest {
         String result = calc.getDisplayValue();
         Assert.assertEquals(result, "0.25", "Division result is incorrect!");
     }
+
+    @Test
+    public void testChainedOperations() {
+        CalculatorPage calc = new CalculatorPage(driver);
+        // Step 1: 2 + 3 = 5
+        calc.enterNumber("2");
+        calc.clickAdd();
+        calc.enterNumber("5");
+        calc.clickEquals();
+
+        String firstResult = calc.getDisplayValue();
+        Assert.assertEquals(firstResult, "7");
+
+        // Step 2: Continue with * 4 = 28
+        calc.clickMultiply();
+        calc.enterNumber("4");
+        calc.clickEquals();
+
+        String finalResult = calc.getDisplayValue();
+        Assert.assertEquals(finalResult, "28");
+    }
+
+    @Test
+    public void testChainedOperationsBug() {
+        CalculatorPage calc = new CalculatorPage(driver);
+
+        // Step 1: 2 + 3 = 5
+        calc.enterNumber("2");
+        calc.clickAdd();
+        calc.enterNumber("3");
+        calc.clickEquals();
+
+        String firstResult = calc.getDisplayValue();
+        Assert.assertEquals(firstResult, "5");
+
+        // Step 2: Continue with * 4 = 20
+        calc.clickMultiply();
+        calc.enterNumber("4");
+        calc.clickEquals();
+
+        String finalResult = calc.getDisplayValue();
+        Assert.assertEquals(finalResult, "20");
+    }
+
+    @Test
+    public void testDivisionBug() {
+        CalculatorPage calc = new CalculatorPage(driver);
+        calc.enterNumber("8");
+        calc.clickDivide();
+        calc.enterNumber("5");
+        calc.clickEquals();
+
+        String result = calc.getDisplayValue();
+
+        Assert.assertEquals(result, "1.6",
+                "Bug validation: Division of 8 ÷ 5 is incorrectly returning 0.625 instead of 1.6.");
+    }
+
 }

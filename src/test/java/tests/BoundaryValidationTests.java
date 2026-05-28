@@ -32,4 +32,18 @@ public class BoundaryValidationTests extends BaseTest {
         Assert.assertEquals(result, "-Infinity",
                 "Bug validation: Log(0) is incorrectly returning -Infinity instead of Error.");
     }
+
+    @Test
+    public void testDivisionByZeroBug() {
+        CalculatorPage calc = new CalculatorPage(driver);
+        calc.enterNumber("8");
+        calc.clickDivide();
+        calc.enterNumber("0");
+        calc.clickEquals();
+
+        String result = calc.getDisplayValue();
+        Assert.assertEquals(result, "Infinity",
+                "Bug validation: Division by zero is incorrectly returning 0 instead of Infinity.");
+    }
+
 }
